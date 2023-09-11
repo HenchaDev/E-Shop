@@ -11,3 +11,17 @@ def new_conversation(request, item_pk):
         return redirect('dashboard:index')
     
     conversations = Conversation.objects.filter(item=item).filter(members__in=[request.user.id])
+
+    if conversations:
+        pass
+
+    if request.method == 'POST':
+        form = ConversationMessageForm(request.POST)
+
+        if form.is_valid:
+            conversation = Conversation.objects.create(item=item)
+            conversation.members.add(request.user)
+            conversation.members.add(item.created_by)
+            conversation.save()
+
+            
